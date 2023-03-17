@@ -61,3 +61,18 @@ Por otra parte, éste layout no tiene gaps. Por ello, he hecho un parche para el
 Instalo además un parche para poner las ventanas en "fullscreen" y volverlas a poner normal.
 
 02. dwm-fullscreen-6.2.diff
+
+
+## Rama 06 -myconfigs
+Una vez meetidos todos los parches y todo lo que necesito, hago unas reconfiguraciones en el fichero config.def.h
+
+1. Meto configuración de colores en un directorio llamado colors
+2. Añado scratchpads para ranger y para cmus
+3. Añado poder desplazarme y redimensionar ventanas con las teclas de función
+4. Quito las teclas que no me gustan, etc.
+
+Por cierto, las cosas que no ve vienen configuradas en el fichero config.def.h las pongo a funcionar usando **sxhkd**
+
+Añado un nuevo parche para quitar el título de ventana de la barra de tareas:
+
+1. dwm-notitle-6.2.diff

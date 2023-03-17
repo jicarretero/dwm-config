@@ -1,0 +1,122 @@
+## Jicg SXHKDRC File
+#
+#dmenu - 
+super + d
+   rofi -show-icons -show drun 
+
+super + shift + d
+    rofi -no-config -no-lazy-grab -show drun -modi drun -theme ~/.config/rofi/launcher/launcher.rasi
+
+super + w
+    rofi -show window
+
+# Aplicaciones Favoritas......
+super + shift + Return
+    thunar
+
+super + b
+    brave
+
+super + shift + b
+    brave --incognito
+
+super + alt + b
+    bitwarden
+
+super + alt + f
+    firefox
+
+super + alt + c
+    google-chrome-stable
+
+super + alt + p
+    pycharm
+
+super + alt + t
+    thunderbird
+
+super + alt + e
+    evernote-client
+
+super + alt + v
+    virt-manager
+
+super + alt + shift + v
+     LANG=es_ES.UTF-8 virtualbox
+
+
+#Brightness up
+XF86MonBrightnessUp
+    sudo light -A 5
+
+#Brightness down
+XF86MonBrightnessDown
+    sudo light -U 5
+
+### 
+# Volume keys
+# 
+#Pavucontrol
+super + shift + v
+    pavucontrol
+
+# Raises volume
+XF86AudioRaiseVolume
+    amixer set Master 2%+
+
+#Lowers volume
+XF86AudioLowerVolume
+    amixer set Master 2%-
+
+#Mute
+XF86AudioMute
+    amixer -D pulse set Master 1+ toggle
+
+# Print Screen
+Print
+      gnome-screenshot -i
+
+#Conky-toggle
+super + ctrl + c
+     ~/.config/qtile/scripts/toggle-cnky.sh
+
+super + c
+    /home/jicg/bin/CsshMenu.bash
+
+super + z
+    /home/jicg/bin/WorkEnvironment.sh
+
+
+
+# Print Screen with Scrot
+# Copy portion of the screen to the clipboard...
+alt + Print
+    scrot -s --line mode=edge '/tmp/ArcoLinux_%Y-%m-%d-%S_$wx$h.png' -e 'xclip -selection clipboard -t image/png -i $f'
+
+# Create a file with the poriton of the screen
+alt + shift + Print
+    scrot -s --line mode=edge 'ArcoLinux_%Y-%m-%d-%S_$wx$h.png' -e 'mv $f $$(xdg-user-dir PICTURES)'
+
+# Create a file with the active window
+control + Print
+    scrot -u  'ArcoLinux_%Y-%m-%d-%S_$wx$h.png' -e 'mv $f $$(xdg-user-dir PICTURES)'
+
+
+# Lock screen, reboot, poweroff
+super + control + l
+    betterlockscreen -l dimblur -- --time-str="%H:%M"
+
+super + control + s
+    betterlockscreen -l dimblur -- --time-str="%H:%M" & sudo systemctl suspend
+
+super + control + p
+     sudo poweroff
+
+super + control + r
+     sudo reboot
+
+#reload sxhkd:
+super + shift + s
+     pkill -USR1 -x sxhkd
+
+

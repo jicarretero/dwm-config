@@ -1,0 +1,29 @@
+diff --git a/grid.c b/grid.c
+index de24c44..bd7d957 100644
+--- a/grid.c
++++ b/grid.c
+@@ -3,6 +3,8 @@ grid(Monitor *m) {
+ 	unsigned int i, n, cx, cy, cw, ch, aw, ah, cols, rows;
+ 	Client *c;
+ 
++	int gap = m->gappx;
++
+ 	for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next))
+ 		n++;
+ 
+@@ -16,11 +18,11 @@ grid(Monitor *m) {
+ 	ch = m->wh / (rows ? rows : 1);
+ 	cw = m->ww / (cols ? cols : 1);
+ 	for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next)) {
+-		cx = m->wx + (i / rows) * cw;
+-		cy = m->wy + (i % rows) * ch;
++		cx = m->wx + (i / rows) * cw + gap;
++		cy = m->wy + (i % rows) * ch + gap;
+ 		/* adjust height/width of last row/column's windows */
+-		ah = ((i + 1) % rows == 0) ? m->wh - ch * rows : 0;
+-		aw = (i >= rows * (cols - 1)) ? m->ww - cw * cols : 0;
++		ah = ((i + 1) % rows == 0) ? m->wh - ch * rows : 0; ah -= gap;
++		aw = (i >= rows * (cols - 1)) ? m->ww - cw * cols : 0; aw -= gap;
+ 		resize(c, cx, cy, cw - 2 * c->bw + aw, ch - 2 * c->bw + ah, False);
+ 		i++;
+ 	}

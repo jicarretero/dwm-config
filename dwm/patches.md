@@ -27,7 +27,7 @@ En esta rama pongo unos parches para la gestión más bonita/estética de gestor
 02. dwm-pertag-20200914-61bb8b2.diff
 03. dwm-hide_vacant_tags-6.3.diff
 
-# Rama 04-Scratchpads
+## Rama 04-Scratchpads
 En esta rama uso el partche named scratchpads que me mola como funciona. Para evitar que me salgan las ventanas por ahí donde no quiero, voy a añadir el partch alwayscenter (todas las ventanas flotantes, scratchpads, etc. iran al centro de la pantalla)
 
 01. dwm-namedscratchpads-6.2.diff
@@ -36,3 +36,28 @@ En esta rama uso el partche named scratchpads que me mola como funciona. Para ev
 
 Utilizo además el "cursorwarp" de forma que cuando cambio de monitor o de ventana en el stack, el cursor se vaya con el foco. -- Hay varias opciones de cursorwarp, y por otra parte, el parche está implementado de forma mucho más fácil  que el parche "warp".
 
+## Rama 05-gridlayout
+Un Layout que me gusta bastante y que me resulta muy útil es el layout en grid.
+
+01. dwm-gridmode-5.8.2.diff
+
+Este layout tiene que "configurarse" un poco --  Primero, hay que cambiar el listado de layouts como sigue en el fichero **config.def.h** para poder seguir usando correctamente el plugin para rotar los layouts (cyclelaouts -- si no se hace peta el dwm):
+
+```
+...
+#include "grid.c"
+static const Layout layouts[] = {
+	/* symbol     arrange function */
+	{ "[]=",      tile },    /* first entry is default */
+	{ "><>",      NULL },    /* no layout function means floating behavior */
+	{ "[M]",      monocle },
+	{ "HHH",      grid },
+	{ NULL,       NULL },
+};
+```
+
+Por otra parte, éste layout no tiene gaps. Por ello, he hecho un parche para el layout fundamental que está implementado en el fichero **grid.c**-
+
+Instalo además un parche para poner las ventanas en "fullscreen" y volverlas a poner normal.
+
+02. dwm-fullscreen-6.2.diff

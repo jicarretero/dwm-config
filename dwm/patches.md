@@ -76,3 +76,9 @@ Por cierto, las cosas que no ve vienen configuradas en el fichero config.def.h l
 Añado un nuevo parche para quitar el título de ventana de la barra de tareas:
 
 1. dwm-notitle-6.2.diff
+
+## Rama 07-fibonacci-layout
+Le introduzco el layout de fibonacci, además del espiral. El que me interesa de todas formas es el modelo en espirar que para ciertas cosas está bien.
+
+1. dwm-fibonacci-20200418-c82db69.diff
+

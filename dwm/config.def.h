@@ -12,11 +12,12 @@ static const int systraypinningfailfirst = 1;   /* 1: if pinning fails, display 
 static const int showsystray        = 1;        /* 0 means no systray */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "monospace:size=10", "Ubuntu Nerd Font:size=10" };
+static const char *fonts[]          = { "monospace:size=10", "Ubuntu Nerd Font:size=12" };
 static const char dmenufont[]       = "monospace:size=10";
 
 /* tagging */
-static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+/* static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" }; */
+static const char *tags[] = {"1: ", "2:  ", "3:  ", "4:  ", "5:  ", "6:  ", "7:  ", "8:  ", "9:  ", "0:  "};
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -123,6 +124,7 @@ static const Key keys[] = {
 	TAGKEYS(                        XK_7,                      6)
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
+	TAGKEYS(                        XK_0,                      9)
 	{ MODKEY,                       XK_F12,  togglescratch,  {.v = scratchpadcmd } },
 	{ MODKEY,                       XK_F7,  togglescratch,  {.v = scratchpadcmuscmd } },
 	{ MODKEY,                       XK_F3,  togglescratch,  {.v = scratchpadrangercmd } },

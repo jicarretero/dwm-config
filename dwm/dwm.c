@@ -80,7 +80,7 @@ enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
 enum { Manager, Xembed, XembedInfo, XLast }; /* Xembed atoms */
 enum { WMProtocols, WMDelete, WMState, WMTakeFocus, WMLast }; /* default atoms */
 enum { ClkTagBar, ClkLtSymbol, ClkStatusText, ClkClientWin,
-       ClkRootWin, ClkLast }; /* clicks */
+       ClkRootWin, ClkLast, ClkWinTitle }; /* clicks */
 
 typedef union {
 	int i;
@@ -244,6 +244,8 @@ static void showhide(Client *c);
 static void sigchld(int unused);
 static void sighup(int unused);
 static void sigterm(int unused);
+static pid_t getstatusbarpid();
+static void sigstatusbar(const Arg *arg);
 static void spawn(const Arg *arg);
 static void spawnscratch(const Arg *arg);
 static Monitor *systraytomon(Monitor *m);
@@ -316,6 +318,11 @@ static Display *dpy;
 static Drw *drw;
 static Monitor *mons, *selmon;
 static Window root, wmcheckwin;
+static int statussig = 1;
+static int statusw;
+static pid_t statuspid = -1;
+static int clkd_at = 0;
+
 
 /* configuration, allows nested code to access above variables */
 #include "config.h"
@@ -512,16 +519,23 @@ buttonpress(XEvent *e)
 				continue;
 			x += TEXTW(tags[i]);
 		} while (ev->x >= x && ++i < LENGTH(tags));
+		klog("Clicked : %d\n", ev->x);
+		klog("selmon->www=%d ; statusw = %d ; ");
 		if (i < LENGTH(tags)) {
+			klog("Clicked in 1");
 			click = ClkTagBar;
 			arg.ui = 1 << i;
-		} else if (ev->x < x + TEXTW(selmon->ltsymbol))
+		} else if (ev->x < x + TEXTW(selmon->ltsymbol)) {
+			klog("Clicked in 2");
 			click = ClkLtSymbol;
-		// else if (ev->x > selmon->ww - (int)TEXTW(stext) - getsystraywidth())
-		//	click = ClkStatusText;
-		else
-		//	click = ClkWinTitle; 
-			click = ClkStatusText;  //nl patch no title
+		} else if (ev->x > selmon->ww - statusw - getsystraywidth()) {
+			klog("Clicked in kbar");
+			click = ClkStatusText;
+			clkd_at = ev->x;
+		} else {
+			klog("Clicked win title");
+			click = ClkWinTitle;
+		}
 	} else if ((c = wintoclient(ev->window))) {
 		focus(c);
 		restack(selmon);
@@ -992,7 +1006,7 @@ drawbar(Monitor *m)
 
 	/* draw status first so it can be overdrawn by tags later */
 	if (m == selmon) { /* status is only drawn on selected monitor */
-		tw = m->ww - drawstatusbar(m, bh, stext);
+		tw = statusw = m->ww - drawstatusbar(m, bh, stext);
 	}
 
 	resizebarwin(m);
@@ -2060,6 +2074,49 @@ sigterm(int unused)
 	Arg a = {.i = 0};
 	quit(&a);
 }
+/* jicg */
+pid_t getstatusbarpid() {
+	char buf[32], *str = buf, *c;
+	FILE *fp = NULL;
+	
+	if (statuspid > 0) {
+		snprintf(buf, sizeof(buf), "/proc/%u/cmdline", statuspid);
+		if ((fp = fopen(buf, "r"))) {
+			fgets(buf, sizeof(buf), fp);
+			while ((c = strchr(str, '/')))
+				str = c + 1;
+			fclose(fp);
+			if (!strcmp(str, STATUSBAR))
+				return statuspid;
+		}
+	}
+	if (!(fp = popen("pidof -s " STATUSBAR, "r"))) {
+		return -1;
+	}
+       
+	fgets(buf, sizeof(buf), fp);
+	if (str == NULL) {
+		return -1;
+	}
+	pclose(fp);
+	return strtoul(buf, NULL, 10);
+}
+
+void sigstatusbar(const Arg *arg) {
+	klog("En sigstatusbar!");
+	union sigval sv;
+
+	if (!statussig)
+		return;
+	sv.sival_int = arg->i;
+	if ((statuspid = getstatusbarpid()) <= 0)
+		return;
+	
+	sv.sival_int = clkd_at;
+	klog("Clicked at: %d", sv.sival_int);
+	sigqueue(statuspid, SIGRTMIN + arg->i, sv);
+}
+/* end jicg*/ 
 
 void
 spawn(const Arg *arg)

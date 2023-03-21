@@ -492,6 +492,51 @@ attachstack(Client *c)
 	c->mon->stack = c;
 }
 
+int getblock() {
+	char buffer[4096] = {0};
+	char cr = (char) 31;
+
+	char *s = stext;
+
+	int i = 0;
+	/* Buffer without colors ... */
+	while ( *s && i<4096 ) {
+	       	if ( *s == '^' && ( *(s+1) == 'c' || *(s+1) == 'b' )  && *(s+2) == '#' ) {
+			s+=3;
+			while (*s && *s++ != '^');
+			continue;
+		}
+		buffer[i++]=*s++;
+	}
+
+
+	char *text = buffer; 
+	s = buffer;
+	int x = 0;
+	int b = 0;
+	i=0;
+
+	while ( *s && x < clkd_at) {
+		if ( *s == cr ) {
+			b++;
+			s++; i++;
+			while ( *s && *s != cr ) { 
+				s++; 
+				i++;
+			}
+			char ch = *s;
+			*s = '\0';
+			x = TEXTW(buffer);
+			*s = ch;
+			if (x>clkd_at)
+			       break;	
+		} else {
+			s++; i++;
+		}
+	}
+	return b;
+}
+
 void
 buttonpress(XEvent *e)
 {
@@ -519,21 +564,18 @@ buttonpress(XEvent *e)
 				continue;
 			x += TEXTW(tags[i]);
 		} while (ev->x >= x && ++i < LENGTH(tags));
-		klog("Clicked : %d\n", ev->x);
-		klog("selmon->www=%d ; statusw = %d ; ");
 		if (i < LENGTH(tags)) {
-			klog("Clicked in 1");
 			click = ClkTagBar;
 			arg.ui = 1 << i;
 		} else if (ev->x < x + TEXTW(selmon->ltsymbol)) {
-			klog("Clicked in 2");
 			click = ClkLtSymbol;
 		} else if (ev->x > selmon->ww - statusw - getsystraywidth()) {
-			klog("Clicked in kbar");
+			char *text, *s, ch;
 			click = ClkStatusText;
-			clkd_at = ev->x;
+			clkd_at = ev->x - selmon->ww + statusw + getsystraywidth();
+			int blk = getblock();
+			klog("Block: %d", blk);
 		} else {
-			klog("Clicked win title");
 			click = ClkWinTitle;
 		}
 	} else if ((c = wintoclient(ev->window))) {
@@ -1030,15 +1072,8 @@ drawbar(Monitor *m)
 	x = drw_text(drw, x, 0, w, bh, lrpad / 2, m->ltsymbol, 0);
 
 	if ((w = m->ww - tw - stw - x) > bh) {
-		//if (m->sel) {
-		//	drw_setscheme(drw, scheme[m == selmon ? SchemeSel : SchemeNorm]);
-		//	drw_text(drw, x, 0, w, bh, lrpad / 2, m->sel->name, 0);
-		//	if (m->sel->isfloating)
-		//		drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel->isfixed, 0);
-		//} else {
 			drw_setscheme(drw, scheme[SchemeNorm]);
 			drw_rect(drw, x, 0, w, bh, 1, 1);
-		//}
 	}
 	drw_map(drw, m->barwin, 0, 0, m->ww - stw, bh);
 }
@@ -1755,6 +1790,7 @@ run(void)
 
 void
 runAutostart(void) {
+	klog("Entering autostart!");
 	system("cd ~/.dwm; ./autostart_blocking.sh");
 	system("cd ~/.dwm; ./autostart.sh &");
 }

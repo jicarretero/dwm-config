@@ -1,5 +1,5 @@
 /* See LICENSE file for copyright and license details. */
-#include "colors/krtcolors.h"
+#include "colors/kdracula.h"
 
 /* appearance */
 static const unsigned int borderpx  = 2;        /* border pixel of windows */
@@ -39,7 +39,6 @@ static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
 static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
 
-#include "klog.c"
 #include "grid.c"
 #include "fibonacci.c"
 static const Layout layouts[] = {

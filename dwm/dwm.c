@@ -322,6 +322,7 @@ static int statussig = 1;
 static int statusw;
 static pid_t statuspid = -1;
 static int clkd_at = 0;
+static int blk = 0;
 
 
 /* configuration, allows nested code to access above variables */
@@ -573,8 +574,7 @@ buttonpress(XEvent *e)
 			char *text, *s, ch;
 			click = ClkStatusText;
 			clkd_at = ev->x - selmon->ww + statusw + getsystraywidth();
-			int blk = getblock();
-			klog("Block: %d", blk);
+			blk = getblock();
 		} else {
 			click = ClkWinTitle;
 		}
@@ -1790,7 +1790,6 @@ run(void)
 
 void
 runAutostart(void) {
-	klog("Entering autostart!");
 	system("cd ~/.dwm; ./autostart_blocking.sh");
 	system("cd ~/.dwm; ./autostart.sh &");
 }
@@ -2139,7 +2138,6 @@ pid_t getstatusbarpid() {
 }
 
 void sigstatusbar(const Arg *arg) {
-	klog("En sigstatusbar!");
 	union sigval sv;
 
 	if (!statussig)
@@ -2148,8 +2146,7 @@ void sigstatusbar(const Arg *arg) {
 	if ((statuspid = getstatusbarpid()) <= 0)
 		return;
 	
-	sv.sival_int = clkd_at;
-	klog("Clicked at: %d", sv.sival_int);
+	sv.sival_int = blk;
 	sigqueue(statuspid, SIGRTMIN + arg->i, sv);
 }
 /* end jicg*/ 

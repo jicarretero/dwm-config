@@ -30,7 +30,7 @@ super + alt + c
     google-chrome-stable
 
 super + alt + p
-    pycharm
+    _JAVA_AWT_WM_NONREPARENTING=1 pycharm
 
 super + alt + t
     thunderbird

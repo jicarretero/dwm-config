@@ -17,11 +17,17 @@ super + shift + Return
 super + b
     brave
 
+super + v
+    vivaldi-stable
+
+super + shift + v
+    vivaldi-stable --incognito
+
 super + shift + b
     brave --incognito
 
 super + alt + b
-    bitwarden
+    bitwarden-desktop
 
 super + alt + f
     firefox
@@ -57,7 +63,7 @@ XF86MonBrightnessDown
 # Volume keys
 # 
 #Pavucontrol
-super + shift + v
+super + shift + p
     pavucontrol
 
 # Raises volume
@@ -104,10 +110,12 @@ control + Print
 
 # Lock screen, reboot, poweroff
 super + control + l
-    betterlockscreen -l dimblur -- --time-str="%H:%M"
+     betterlockscreen -l dimblur -- --time-str="%H:%M"
+     # xscreensaver-command -lock
 
 super + control + s
     betterlockscreen -l dimblur -- --time-str="%H:%M" & sudo systemctl suspend
+    # xscreensaver-command -lock & sudo systemctl suspend
 
 super + control + p
      sudo poweroff

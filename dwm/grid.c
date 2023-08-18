@@ -21,8 +21,8 @@ grid(Monitor *m) {
 		cx = m->wx + (i / rows) * cw + gap;
 		cy = m->wy + (i % rows) * ch + gap;
 		/* adjust height/width of last row/column's windows */
-		ah = ((i + 1) % rows == 0) ? m->wh - ch * rows : 0; ah -= gap;
-		aw = (i >= rows * (cols - 1)) ? m->ww - cw * cols : 0; aw -= gap;
+		ah = ((i + 1) % rows == 0) ? m->wh - ch * rows : 0; ah -= 2*gap;
+		aw = (i >= rows * (cols - 1)) ? m->ww - cw * cols : 0; aw -= 2*gap;
 		resize(c, cx, cy, cw - 2 * c->bw + aw, ch - 2 * c->bw + ah, False);
 		i++;
 	}
